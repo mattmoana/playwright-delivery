@@ -1,55 +1,52 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
-// @ts-ignore
-import dotenv from 'dotenv';
 
-dotenv.config();
-
-const baseUrl = process.env.BASE_URL;
+const URL = process.env.APP_URL
 
 test.beforeEach(async ({ page }) => {
-  await page.goto(`${baseUrl}/signin`);
-});
+  await page.goto(URL);
 
-test('Check for incorrect credentials message and close pop up message', async ({ page }) => {
-  const randomUsername = faker.internet.username()
-  const randomPassword = faker.internet.password();
 
-  const usernameField = page.getByTestId("username-input");
-  const passwordField = page.getByTestId("password-input");
-  const signInButton = page.getByTestId("signIn-button");
-  const errorPopUpMessage = page.getByTestId("authorizationError-popup");
-  const closeButton = page.getByTestId("authorizationError-popup-close-button");
+  test('Check for incorrect credentials message and close pop up message', async ({page}) => {
+    const randomUsername = faker.internet.username()
+    const randomPassword = faker.internet.password();
 
-  await usernameField.fill(randomUsername);
-  console.log(randomUsername)
-  await passwordField.fill(randomPassword);
-  console.log(randomPassword)
-  await signInButton.click();
-  await expect(errorPopUpMessage).toBeVisible();
+    const usernameField = page.getByTestId("username-input");
+    const passwordField = page.getByTestId("password-input");
+    const signInButton = page.getByTestId("signIn-button");
+    const errorPopUpMessage = page.getByTestId("authorizationError-popup");
+    const closeButton = page.getByTestId("authorizationError-popup-close-button");
 
-  await closeButton.click();
-  await expect(signInButton).toBeEnabled();
-});
+    await usernameField.fill(randomUsername);
+    console.log(randomUsername)
+    await passwordField.fill(randomPassword);
+    console.log(randomPassword)
+    await signInButton.click();
+    await expect(errorPopUpMessage).toBeVisible();
 
-test('Check for error messages for login input', async ({ page }) => {
-  const usernameField = page.getByTestId("username-input");
-  const passwordField = page.getByTestId("password-input");
-  const emptyErrorMessageForUserName = page.getByTestId('username-input-error').nth(0);
-  const emptyErrorMessageForPassword = page.getByTestId('username-input-error').nth(1);
+    await closeButton.click();
+    await expect(signInButton).toBeEnabled();
+  });
 
-  const emptyErrorMessageForShortUserName = page.getByText('The field must contain at least of characters: 2');
-  const emptyErrorMessageForShortPassword = page.getByText('The field must contain at least of characters: 8');
+  test('Check for error messages for login input', async ({page}) => {
+    const usernameField = page.getByTestId("username-input");
+    const passwordField = page.getByTestId("password-input");
+    const emptyErrorMessageForUserName = page.getByTestId('username-input-error').nth(0);
+    const emptyErrorMessageForPassword = page.getByTestId('username-input-error').nth(1);
 
-  await usernameField.fill("t");
-  await expect(emptyErrorMessageForShortUserName).toBeVisible();
+    const emptyErrorMessageForShortUserName = page.getByText('The field must contain at least of characters: 2');
+    const emptyErrorMessageForShortPassword = page.getByText('The field must contain at least of characters: 8');
 
-  await usernameField.fill("");
-  await expect(emptyErrorMessageForUserName).toBeVisible();
+    await usernameField.fill("t");
+    await expect(emptyErrorMessageForShortUserName).toBeVisible();
 
-  await passwordField.fill("test");
-  await expect(emptyErrorMessageForShortPassword).toBeVisible();
+    await usernameField.fill("");
+    await expect(emptyErrorMessageForUserName).toBeVisible();
 
-  await passwordField.fill("");
-  await expect(emptyErrorMessageForPassword).toBeVisible();
-});
+    await passwordField.fill("test");
+    await expect(emptyErrorMessageForShortPassword).toBeVisible();
+
+    await passwordField.fill("");
+    await expect(emptyErrorMessageForPassword).toBeVisible();
+  });
+})
