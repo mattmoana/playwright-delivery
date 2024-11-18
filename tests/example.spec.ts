@@ -28,22 +28,27 @@ test('Check for incorrect credentials message and close pop up message', async (
   await expect(signInButton).toBeEnabled();
 });
 
-test('Check for error messages for login input', async ({ page }) => {
+test.only('Check for error messages for login input', async ({ page }) => {
   const usernameField = page.getByTestId("username-input");
   const passwordField = page.getByTestId("password-input");
+
+  // Error messages selectors
   const emptyErrorMessageForUserName = page.getByTestId('username-input-error').nth(0);
   const emptyErrorMessageForPassword = page.getByTestId('username-input-error').nth(1);
-
   const emptyErrorMessageForShortUserName = page.getByText('The field must contain at least of characters: 2');
   const emptyErrorMessageForShortPassword = page.getByText('The field must contain at least of characters: 8');
 
-  await usernameField.fill("t");
+  const randomShortUsername = faker.internet.username().slice(0, 1); // One character username
+
+  const randomShortPassword = faker.internet.password().slice(1, 4); // 4-character password
+
+  await usernameField.fill(randomShortUsername);
   await expect(emptyErrorMessageForShortUserName).toBeVisible();
 
   await usernameField.fill("");
   await expect(emptyErrorMessageForUserName).toBeVisible();
 
-  await passwordField.fill("test");
+  await passwordField.fill(randomShortPassword);
   await expect(emptyErrorMessageForShortPassword).toBeVisible();
 
   await passwordField.fill("");
