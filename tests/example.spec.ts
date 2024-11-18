@@ -28,7 +28,7 @@ test('Check for incorrect credentials message and close pop up message', async (
   await expect(signInButton).toBeEnabled();
 });
 
-test.only('Check for error messages for login input', async ({ page }) => {
+test('Check for error messages for login input', async ({ page }) => {
   const usernameField = page.getByTestId("username-input");
   const passwordField = page.getByTestId("password-input");
 
